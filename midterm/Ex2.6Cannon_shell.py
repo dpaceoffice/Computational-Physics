@@ -81,7 +81,7 @@ if __name__ == '__main__':
         for key in data.keys():
             x_list.append(data[key][X] / 10 ** 3)
             y_list.append(data[key][Y] / 10 ** 3)
-        plot(x_list,y_list, "Trajectory of a cannon shell", "x (km)", "y (km)",style=theta[1], legendLabel=''+str(theta[0])+'∘')
+        plot(x_list,y_list, "Trajectory of a cannon shell", "x (km)", "y (km)",style=theta[1], legendLabel=''+str(theta[0])+'°')
 
     plt.ylim([0, 20])
     plt.xlim([0, 60])

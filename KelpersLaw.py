@@ -1,0 +1,165 @@
+import math
+import matplotlib.pyplot as plt
+"""
+Planetary Orbit
+Figure 4.6
+"""
+X = 0
+Y = 1
+VX = 2
+VY = 3
+RX = 5
+RY = 6
+
+
+def main(N=2000, β=2.0, dt=0.001, a = 0):
+    for i in range(0, N):
+        x = data[X][i]
+        y = data[Y][i]
+        vx = data[VX][i]
+        vy = data[VY][i]
+
+        r_i = (x**2 + y**2)**0.5
+        relativity = [1,(1 + a/r_i**2)][a != 0]
+        vx_i = vx - (4*math.pi**2*x) * relativity/r_i**(β + 1) * dt
+        vy_i = vy - (4*math.pi**2*y) * relativity/r_i**(β + 1) * dt
+        x_i = x + vx_i * dt
+        y_i = y + vy_i * dt
+        data[X].append(x_i)
+        data[Y].append(y_i)
+        data[VX].append(vx_i)
+        data[VY].append(vy_i)
+        if(r_i >= 0.47):
+            if(RX not in data.keys()):
+                data[RX] = [0]
+                data[RY] = [0]
+                data[RX].append(x_i)
+                data[RY].append(y_i)
+            else:
+                data[RX].append(0)
+                data[RX].append(x_i)
+                data[RY].append(0)
+                data[RY].append(y_i)
+
+
+
+"""
+Figure 4.6
+"""
+
+
+def fig4_6():
+    N = 650
+    dt = 0.002
+    B_list = [2.10, 2.01]
+    fig = plt.figure('Figure 4.6 Page 106')
+    axs = fig.subplots(1, 2)
+    fig.tight_layout(pad=5.0)
+    i = 0
+
+    for β in B_list:
+        data.clear()
+        data[X] = [1]
+        data[Y] = [0]
+        data[VX] = [0]
+        #data[VY] = [2*math.pi]
+        data[VY] = [4]
+        main(N, β, dt)
+        axs[i].axhline(y=0, color='k', linestyle=':')
+        axs[i].axvline(x=0, color='k', linestyle=':')
+        #axs[i].axhline(x=0, color='k', linestyle=':')
+
+        axs[i].plot(data[X], data[Y], 'k-',
+                    linestyle=':', label='β = '+str(β), )
+
+        axs[i].set_xlabel('x (AU)')
+        axs[i].set_ylabel('y (AU)')
+        axs[i].set_title('Simulation of elliptical orbit')
+        axs[i].legend(loc='upper left')
+        axs[i].set_xlim([-1, 1])
+        axs[i].set_ylim([-1, 1])
+        i += 1
+    plt.show()
+
+"""
+Figure 4.8
+"""
+def fig4_8():
+    N = 10000
+    β = 2.0
+
+    #name, AU, dt
+    initilizers = [('Simulation of the Precesaion of Mercury', 0.47, 0.0001)]
+
+    fig = plt.figure('Figure 4.8')
+    i = 0
+    for planet in initilizers:
+        data.clear()
+        data[X] = [planet[1]]
+        data[Y] = [0]
+        data[VX] = [0]
+        data[VY] = [8.2]
+        dt = planet[2]
+        main(N, β, dt, a = 0.01)
+        plt.title(planet[0])
+        plt.plot(data[X], data[Y], 'k', linestyle='-')
+        for i in range(2,len(data[RX]),2):
+            print(str(data[RX][i:i+2]) + ' '+str(data[RY][i:i+2]))
+            plt.plot(data[RX][i:i+2], data[RY][i:i+2], 'k-')
+        plt.xlabel('x (AU)')
+        plt.ylabel('y (AU)')
+        plt.text(-0.1,0.5, 'α = 0.01')
+        plt.xticks([-0.55,0,0.55],['-0.5','0','0.5'])
+        plt.yticks([-0.55,0,0.55],['-0.5','0','0.5'])
+    plt.show()
+
+def ex4_8():
+    N = 2000
+    β = 2.0
+
+    #name, AU, T, dt
+    initilizers = [('Venus', 0.72, 0.610, 0.001), ('Earth', 1, 0.9989, 0.001), ('Mars', 1.52, 1.878, 0.001), ('Jupiter', 5.20, 11.916, 0.01), ('Saturn', 9.54, 29.289, 0.1)]
+    elliptical = [('Elliptical Orbit 1', 4, 1, 0.002, 2),('Elliptical Orbit 2', 8, 1, 0.002,2),('Elliptical Orbit 3', 4, 1, 0.002, 1.15), ('Elliptical Orbit 4', 8, 1, 0.05,2.15), ('Elliptical Orbit 5', 5, 2, 0.002,2)]
+    fig = plt.figure('Exercise 4.8', figsize=(23,8), dpi=80)
+    fig.subplots_adjust(wspace=0.6,hspace=0.3)
+    axs = fig.subplots(2, 5)
+    i = 0
+    for planet in initilizers:
+        data.clear()
+        data[X] = [planet[1]]
+        data[Y] = [0]
+        data[VX] = [0]
+        data[VY] = [2* math.pi * (planet[1]/planet[2])]
+        dt = planet[3]
+        main(N, β, dt)
+        axs[0][i].set_title(planet[0])
+        axs[0][i].plot(data[X], data[Y], 'k', linestyle='-', label='T²/a³ = '+str(round(planet[2]**2/planet[1]**3,3)))
+        axs[0][i].legend(bbox_to_anchor=(0,1.02,1,0.2), loc="upper left")
+        axs[0][i].axhline(y=0, color='k', linestyle=':')
+        axs[0][i].axvline(x=0, color='k', linestyle=':')
+        i += 1
+    N = 2500
+    i = 0
+    for planet in elliptical:
+        data.clear()
+        data[X] = [1]
+        data[Y] = [0]
+        data[VX] = [0]
+        data[VY] = [(planet[1]/planet[2])]
+        dt = planet[3]
+        main(N, planet[4], dt)
+        axs[1][i].set_title(planet[0])
+        axs[1][i].plot(data[X], data[Y], 'k', linestyle='-', label='T²/a³ = '+str(round(planet[2]**2/planet[1]**3,3)))
+        axs[1][i].legend(bbox_to_anchor=(0,1.02,1,0.2), loc="upper left")
+        axs[1][i].axhline(y=0, color='k', linestyle=':')
+        axs[1][i].axvline(x=0, color='k', linestyle=':')
+        i += 1
+
+    plt.show()
+
+
+if __name__ == '__main__':
+    data = dict()
+    fig4_8()
+    fig4_6()
+    #ex4_8()

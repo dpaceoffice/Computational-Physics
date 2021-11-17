@@ -140,6 +140,8 @@ if __name__ == '__main__':
     plt.axvline(x=60,ymin =0.1, ymax=0.98, label='homeplate', color='k',linestyle='--')
     plt.annotate('pitcher', xy=(0,-1.8), xytext=(5, -3), arrowprops=dict(arrowstyle="->"))
     plt.annotate('homeplate', xy=(60,-2.5), xytext=(50, -3), arrowprops=dict(arrowstyle="->"))
+    plt.annotate('horizontal deflection (z)', xy=(25, 0), xytext=(10, -1), arrowprops=dict(arrowstyle="->"))
+    plt.annotate('vertical deflection (y)', xy=(35, 2), xytext=(30, 3), arrowprops=dict(arrowstyle="->"))
     plt.ylim([-4, 4])
     plt.xlim([-1,60.9])
     plt.show()
